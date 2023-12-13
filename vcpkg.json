@@ -1,0 +1,9 @@
+{
+  "name": "doctest-fail",
+  "version-string": "0.1",
+  "description": "Doctest fail",
+  "dependencies": [
+    "doctest"
+  ],
+  "builtin-baseline": "3b3bd424827a1f7f4813216f6b32b6c61e386b2e"
+}
