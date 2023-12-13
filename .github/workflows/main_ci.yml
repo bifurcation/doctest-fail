@@ -1,4 +1,4 @@
-name: MLSPP CI
+name: Doctest fail test case 
 
 on:
   push:
@@ -17,15 +17,10 @@ env:
 jobs:
   build-and-unit-test:
     name: Build and test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest]
-        crypto: [openssl_1.1]
+    runs-on: windows-latest
 
     env:
-      BUILD_DIR: "${RUNNER_TEMP}/build_${{ matrix.crypto }}"
-      CRYPTO_DIR: "."
+      BUILD_DIR: "${RUNNER_TEMP}/build"
 
     steps:
     - uses: actions/checkout@v4
@@ -33,25 +28,11 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
-    - uses: ./.github/actions/prepare-build
-      with:
-        os: ${{ matrix.os }}
-        crypto: ${{ matrix.crypto }}
-        cache-dir: ${{ github.workspace }}/vcpkg_cache
-
     - name: Build
       run: |
-        # XXX(RLB): If we do not have SANITIZERS=ON here, the Windows CI builds
-        # hang in the middle of unit testing.
-        cmake -B "${{ env.BUILD_DIR }}" -DVCPKG_MANIFEST_DIR="${{ env.CRYPTO_DIR }}" -DTESTING=ON -DSANITIZERS=ON
+        cmake -B "${{ env.BUILD_DIR }}"
         cmake --build "${{ env.BUILD_DIR }}"
-
-    - name: Unit Test (non-Windows)
-      if: matrix.os != 'windows-latest'
-      run: |
-        cmake --build "${{ env.BUILD_DIR }}" --target test
-
+    
     - name: Unit Test (Windows)
-      if: matrix.os == 'windows-latest'
       run: |
         cmake --build "${{ env.BUILD_DIR }}" --target RUN_TESTS
