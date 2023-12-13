@@ -5,18 +5,20 @@ project(fail
   LANGUAGES CXX
 )
 
-set(VCPKG_BUILD_TYPE release)
-
-set(LIB_NAME "${PROJECT_NAME}")
-
+# Enable sanitizers
 message(STATUS "Enabling sanitizers")
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  add_compile_options(-fsanitize=address -fsanitize=undefined)
-  add_link_options(-fsanitize=address -fsanitize=undefined)
-elseif(MSVC)
-  # MSVC uses a different flag, and doesn't require passing it to the linker 
-  add_compile_options("/fsanitize=address")
-endif()
+add_compile_options("/fsanitize=address")
  
+# Dependencies
+find_package(doctest REQUIRED)
+
+# Define a test binary
+set(TEST_APP_NAME ${PROJECT_NAME})
+add_executable(${TEST_APP_NAME} main.cpp)
+target_link_libraries(${TEST_APP_NAME} doctest::doctest)
+
+# Enable CTest
 enable_testing()
-add_subdirectory(test)
+include(doctest)
+doctest_discover_tests(${TEST_APP_NAME} ADD_LABELS 0)
+
