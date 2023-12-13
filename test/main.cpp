@@ -1,8 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
+#include <add/add.h>
+
 TEST_CASE("Example") {
-  auto one = size_t(1);
-  auto two = 1 + 1;
-  REQUIRE(two == 2);
+  REQUIRE(add(1, 1) == 2);
 }
