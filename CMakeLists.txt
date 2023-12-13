@@ -20,5 +20,5 @@ target_link_libraries(${TEST_APP_NAME} doctest::doctest)
 # Enable CTest
 enable_testing()
 include(doctest)
-doctest_discover_tests(${TEST_APP_NAME} ADD_LABELS 0)
+doctest_discover_tests(${TEST_APP_NAME})
 
