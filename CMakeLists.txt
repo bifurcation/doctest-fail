@@ -9,6 +9,16 @@ set(VCPKG_BUILD_TYPE release)
 
 set(LIB_NAME "${PROJECT_NAME}")
 
+message(STATUS "Enabling sanitizers")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  add_compile_options(-fsanitize=address -fsanitize=undefined)
+  add_link_options(-fsanitize=address -fsanitize=undefined)
+elseif(MSVC)
+  # MSVC uses a different flag, and doesn't require passing it to the linker 
+  add_compile_options("/fsanitize=address")
+endif()
+ 
+
 file(GLOB_RECURSE LIB_HEADERS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 file(GLOB_RECURSE LIB_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
